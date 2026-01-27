@@ -1,17 +1,1454 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>site</title>
-  <script type="module" crossorigin src="/assets/index-BJuRuRbN.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-CoR1Wgfr.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NiftyKick Design System</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Righteous&family=Outfit:wght@300;400;600;800&family=Fredoka:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --deep-blue: #1a3a8a;
+      --bright-blue: #3b82f6;
+      --sky: #60a5fa;
+      --cyan: #06b6d4;
+      --powder: #e0f2fe;
+      --sunshine: #fbbf24;
+      --coral: #fb7185;
+      --mint: #34d399;
+      --lavender: #a78bfa;
+      --peach: #fdba74;
+      --ink: #1e293b;
+      --slate: #475569;
+      --cloud: #f8fafc;
+      --white: #ffffff;
+
+      --display: 'Righteous', cursive;
+      --heading: 'Fredoka', sans-serif;
+      --body: 'Outfit', sans-serif;
+    }
+
+    body.dark-mode {
+      --ink: #f8fafc;
+      --slate: #cbd5e1;
+      --cloud: #0f172a;
+      --white: #1e293b;
+      --powder: #1e3a5f;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--body);
+      background: var(--cloud);
+      color: var(--ink);
+      overflow-x: hidden;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    /* Floating shapes background */
+    .bg-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .shape {
+      position: absolute;
+      opacity: 0.06;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .shape-1 {
+      top: 10%;
+      left: 10%;
+      width: 200px;
+      height: 200px;
+      background: linear-gradient(135deg, var(--bright-blue), var(--cyan));
+      border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+      animation-delay: 0s;
+    }
+
+    .shape-2 {
+      top: 60%;
+      right: 15%;
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(135deg, var(--sunshine), var(--peach));
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+      animation-delay: -5s;
+    }
+
+    .shape-3 {
+      bottom: 20%;
+      left: 20%;
+      width: 180px;
+      height: 180px;
+      background: linear-gradient(135deg, var(--lavender), var(--coral));
+      border-radius: 50% 50% 30% 70% / 50% 70% 30% 50%;
+      animation-delay: -10s;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+      }
+
+      25% {
+        transform: translate(30px, -30px) rotate(90deg) scale(1.1);
+      }
+
+      50% {
+        transform: translate(-20px, 20px) rotate(180deg) scale(0.9);
+      }
+
+      75% {
+        transform: translate(20px, 30px) rotate(270deg) scale(1.05);
+      }
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 2rem;
+      z-index: 1;
+    }
+
+    .hero-content {
+      text-align: center;
+      max-width: 1200px;
+      padding-bottom: 2rem;
+    }
+
+    .system-name {
+      font-family: var(--display);
+      font-size: clamp(4rem, 15vw, 12rem);
+      background: linear-gradient(135deg, var(--deep-blue) 0%, var(--bright-blue) 30%, var(--cyan) 60%, var(--sky) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: bounceIn 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+      position: relative;
+      padding-bottom: 0.2em;
+    }
+
+    .system-name::after {
+      content: '✨';
+      position: absolute;
+      top: -20px;
+      right: -10px;
+      font-size: 0.3em;
+      animation: sparkle 2s ease-in-out infinite;
+    }
+
+    @keyframes sparkle {
+
+      0%,
+      100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.2) rotate(180deg);
+        opacity: 0.8;
+      }
+    }
+
+    .system-tagline {
+      font-family: var(--heading);
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      color: var(--slate);
+      font-weight: 500;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.3s forwards;
+    }
+
+    @keyframes bounceIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.3) rotate(-10deg);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.05) rotate(2deg);
+      }
+
+      70% {
+        transform: scale(0.95) rotate(-1deg);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--body);
+      font-size: 0.875rem;
+      color: var(--slate);
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.6s forwards, bounce 2s ease-in-out 1s infinite;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      50% {
+        transform: translateX(-50%) translateY(-10px);
+      }
+    }
+
+    /* Sections */
+    section {
+      padding: 8rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-number {
+      font-family: var(--display);
+      font-size: 1rem;
+      color: var(--bright-blue);
+      margin-bottom: 0.5rem;
+      display: inline-block;
+      padding: 0.5rem 1.25rem;
+      background: var(--powder);
+      border-radius: 50px;
+      font-weight: 400;
+    }
+
+    .section-title {
+      font-family: var(--display);
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      color: var(--ink);
+      margin-bottom: 3rem;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    /* Typography Section */
+    .type-grid {
+      display: grid;
+      gap: 3rem;
+      margin-top: 4rem;
+    }
+
+    .type-item {
+      padding: 2rem;
+      background: var(--white);
+      border-radius: 24px;
+      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.08);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border: 2px solid transparent;
+    }
+
+    .type-item:hover {
+      transform: translateY(-8px) rotate(-1deg);
+      box-shadow: 0 20px 60px rgba(59, 130, 246, 0.15);
+      border-color: var(--powder);
+    }
+
+    .type-label {
+      font-family: var(--heading);
+      font-size: 0.875rem;
+      color: var(--slate);
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .display-1 {
+      font-family: var(--display);
+      font-size: clamp(3rem, 8vw, 6rem);
+      color: var(--ink);
+      line-height: 1;
+    }
+
+    .display-2 {
+      font-family: var(--heading);
+      font-size: clamp(2rem, 5vw, 4rem);
+      color: var(--deep-blue);
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .heading-1 {
+      font-family: var(--heading);
+      font-size: clamp(1.75rem, 4vw, 3rem);
+      color: var(--ink);
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .heading-2 {
+      font-family: var(--heading);
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      color: var(--bright-blue);
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .body-large {
+      font-family: var(--body);
+      font-size: clamp(1.125rem, 2vw, 1.375rem);
+      line-height: 1.6;
+      color: var(--slate);
+      max-width: 60ch;
+    }
+
+    .body-regular {
+      font-family: var(--body);
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--slate);
+      max-width: 65ch;
+    }
+
+    /* Color Section */
+    .color-palette {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin-top: 4rem;
+    }
+
+    .color-swatch {
+      border-radius: 24px;
+      padding: 3rem 2rem 2rem;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .color-swatch::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: inherit;
+      transition: transform 0.4s ease;
+    }
+
+    .color-swatch:hover {
+      transform: scale(1.05) rotate(3deg);
+    }
+
+    .color-swatch:hover::before {
+      transform: scale(1.2);
+    }
+
+    .color-name {
+      font-family: var(--heading);
+      font-weight: 600;
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .color-code {
+      font-family: var(--body);
+      font-size: 0.875rem;
+      font-weight: 500;
+      position: relative;
+      z-index: 1;
+    }
+
+    .swatch-blue {
+      background: var(--bright-blue);
+      color: white;
+    }
+
+    .swatch-cyan {
+      background: var(--cyan);
+      color: white;
+    }
+
+    .swatch-sunshine {
+      background: var(--sunshine);
+      color: var(--ink);
+    }
+
+    .swatch-coral {
+      background: var(--coral);
+      color: white;
+    }
+
+    .swatch-mint {
+      background: var(--mint);
+      color: white;
+    }
+
+    .swatch-lavender {
+      background: var(--lavender);
+      color: white;
+    }
+
+    .swatch-peach {
+      background: var(--peach);
+      color: var(--ink);
+    }
+
+    .swatch-ink {
+      background: var(--ink);
+      color: white;
+    }
+
+    /* Buttons Section */
+    .button-showcase {
+      display: grid;
+      gap: 3rem;
+      margin-top: 4rem;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .btn {
+      font-family: var(--heading);
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn:hover::before {
+      width: 400px;
+      height: 400px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--bright-blue), var(--deep-blue));
+      color: white;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-secondary {
+      background: var(--powder);
+      color: var(--bright-blue);
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-4px) scale(1.02);
+      background: var(--bright-blue);
+      color: white;
+    }
+
+    .btn-accent {
+      background: linear-gradient(135deg, var(--sunshine), var(--peach));
+      color: var(--ink);
+      box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+    }
+
+    .btn-accent:hover {
+      transform: translateY(-4px) scale(1.02) rotate(-2deg);
+      box-shadow: 0 8px 30px rgba(251, 191, 36, 0.4);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--bright-blue);
+      border: 3px solid var(--bright-blue);
+      box-shadow: none;
+    }
+
+    .btn-outline:hover {
+      background: var(--bright-blue);
+      color: white;
+      transform: translateY(-4px) scale(1.02);
+    }
+
+    .btn-rounded {
+      width: 60px;
+      height: 60px;
+      padding: 0;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-sm {
+      padding: 0.625rem 1.5rem;
+      font-size: 0.875rem;
+    }
+
+    .btn-lg {
+      padding: 1.25rem 3rem;
+      font-size: 1.125rem;
+    }
+
+    /* Components Section */
+    .components-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 2rem;
+      margin-top: 4rem;
+    }
+
+    .component-card {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.08);
+      transition: all 0.4s ease;
+    }
+
+    .component-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(59, 130, 246, 0.15);
+    }
+
+    .component-title {
+      font-family: var(--heading);
+      font-size: 1.75rem;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+
+    /* Input */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      font-family: var(--heading);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      font-family: var(--body);
+      font-size: 1rem;
+      border: 2px solid var(--powder);
+      border-radius: 16px;
+      background: var(--cloud);
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--bright-blue);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+      transform: translateY(-2px);
+    }
+
+    /* Toggle */
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .toggle {
+      width: 60px;
+      height: 32px;
+      background: var(--powder);
+      border-radius: 16px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .toggle.active {
+      background: var(--bright-blue);
+    }
+
+    .toggle-thumb {
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .toggle.active .toggle-thumb {
+      left: 32px;
+    }
+
+    .toggle-label {
+      font-family: var(--body);
+      font-size: 1rem;
+      color: var(--slate);
+    }
+
+    /* Badges */
+    .badge-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .badge {
+      font-family: var(--heading);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      display: inline-block;
+    }
+
+    .badge-blue {
+      background: var(--powder);
+      color: var(--bright-blue);
+    }
+
+    .badge-success {
+      background: #d1fae5;
+      color: #059669;
+    }
+
+    .badge-warning {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .badge-danger {
+      background: #ffe4e6;
+      color: #e11d48;
+    }
+
+    /* Cards */
+    .card-demo {
+      background: linear-gradient(135deg, var(--powder) 0%, var(--white) 100%);
+      border-radius: 24px;
+      padding: 2rem;
+      border: 2px solid var(--powder);
+    }
+
+    .card-demo-title {
+      font-family: var(--heading);
+      font-size: 1.5rem;
+      color: var(--ink);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .card-demo-text {
+      font-family: var(--body);
+      color: var(--slate);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Reddit-Style List Component */
+    .list-container {
+      background: var(--white);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.08);
+    }
+
+    .list-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1.5rem;
+      border-bottom: 2px solid var(--powder);
+      transition: all 0.3s ease;
+      background: var(--white);
+    }
+
+    .list-item:last-child {
+      border-bottom: none;
+    }
+
+    .list-item:hover {
+      background: var(--cloud);
+      transform: translateX(8px);
+    }
+
+    .vote-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 50px;
+    }
+
+    .vote-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: var(--powder);
+      color: var(--slate);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .vote-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .vote-up:hover {
+      background: var(--mint);
+      color: white;
+    }
+
+    .vote-down:hover {
+      background: var(--coral);
+      color: white;
+    }
+
+    .vote-count {
+      font-family: var(--heading);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--ink);
+    }
+
+    .list-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .list-title {
+      font-family: var(--heading);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .list-title:hover {
+      color: var(--bright-blue);
+    }
+
+    .list-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+      font-family: var(--body);
+      font-size: 0.875rem;
+      color: var(--slate);
+    }
+
+    .meta-item strong {
+      color: var(--bright-blue);
+      font-weight: 600;
+    }
+
+    .list-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tag {
+      font-family: var(--body);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.375rem 0.875rem;
+      background: var(--powder);
+      color: var(--bright-blue);
+      border-radius: 50px;
+      transition: all 0.3s ease;
+    }
+
+    .tag:hover {
+      background: var(--bright-blue);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* Spacing Section */
+    .spacing-grid {
+      display: grid;
+      gap: 2rem;
+      margin-top: 4rem;
+    }
+
+    .spacing-row {
+      display: grid;
+      grid-template-columns: 120px 1fr 100px;
+      align-items: center;
+      gap: 2rem;
+      padding: 1rem;
+      background: var(--white);
+      border-radius: 16px;
+    }
+
+    .spacing-label {
+      font-family: var(--heading);
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .spacing-visual {
+      height: 40px;
+      background: linear-gradient(90deg, var(--bright-blue), var(--cyan));
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .spacing-row:hover .spacing-visual {
+      background: linear-gradient(90deg, var(--sunshine), var(--coral));
+      transform: scaleX(1.05);
+    }
+
+    .spacing-value {
+      font-family: var(--body);
+      color: var(--slate);
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 4rem 2rem;
+      margin-top: 6rem;
+      border-top: 2px dashed var(--powder);
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-text {
+      font-family: var(--heading);
+      font-size: 1rem;
+      color: var(--slate);
+    }
+
+    .footer-emoji {
+      font-size: 2rem;
+      display: inline-block;
+      animation: wave 1s ease-in-out infinite;
+      transform-origin: 70% 70%;
+    }
+
+    @keyframes wave {
+
+      0%,
+      100% {
+        transform: rotate(0deg);
+      }
+
+      25% {
+        transform: rotate(20deg);
+      }
+
+      75% {
+        transform: rotate(-20deg);
+      }
+    }
+
+    /* Dark Mode Toggle */
+    .dark-mode-toggle {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      z-index: 10000;
+      background: var(--white);
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 3px solid var(--powder);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
+    }
+
+    .dark-mode-toggle:hover {
+      transform: scale(1.1) rotate(15deg);
+      box-shadow: 0 8px 30px rgba(59, 130, 246, 0.25);
+    }
+
+    .dark-mode-toggle:active {
+      transform: scale(0.95) rotate(-15deg);
+    }
+
+    body.dark-mode .dark-mode-toggle {
+      background: var(--white);
+      border-color: var(--bright-blue);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .dark-mode-toggle {
+        top: 1rem;
+        right: 1rem;
+        width: 56px;
+        height: 56px;
+        font-size: 1.5rem;
+      }
+
+      section {
+        padding: 4rem 1.5rem;
+      }
+
+      .components-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .button-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .spacing-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .list-item {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .vote-section {
+        flex-direction: row;
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .list-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <div id="root"></div>
+  <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
+    <span id="toggleIcon">🌙</span>
+  </button>
+
+  <div class="bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-content">
+      <h1 class="system-name">🔥NiftyKick</h1>
+      <p class="system-tagline">A playful design system that brings joy to every interaction</p>
+    </div>
+    <div class="scroll-hint">↓ Explore Below</div>
+  </div>
+
+  <section id="typography">
+    <span class="section-number">01</span>
+    <h2 class="section-title">Typography That Pops</h2>
+
+    <div class="type-grid">
+      <div class="type-item">
+        <div class="type-label">Display Extra Large</div>
+        <div class="display-1">Make it Big!</div>
+      </div>
+
+      <div class="type-item">
+        <div class="type-label">Display Large</div>
+        <div class="display-2">Friendly & Bold</div>
+      </div>
+
+      <div class="type-item">
+        <div class="type-label">Heading 1</div>
+        <div class="heading-1">Clear and Confident</div>
+      </div>
+
+      <div class="type-item">
+        <div class="type-label">Heading 2</div>
+        <div class="heading-2">Approachable Headers</div>
+      </div>
+
+      <div class="type-item">
+        <div class="type-label">Body Large</div>
+        <div class="body-large">
+          Great typography creates a delightful reading experience. Our fonts are chosen to feel approachable, fun, and
+          easy on the eyes. Every word should spark a little joy.
+        </div>
+      </div>
+
+      <div class="type-item">
+        <div class="type-label">Body Regular</div>
+        <div class="body-regular">
+          Whether you're reading a short message or diving into a longer article, our text stays comfortable and
+          friendly. The rounded letterforms create a warm, inviting atmosphere that keeps people engaged.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="colors">
+    <span class="section-number">02</span>
+    <h2 class="section-title">Colors That Shine</h2>
+
+    <div class="color-palette">
+      <div class="color-swatch swatch-blue">
+        <div class="color-name">Bright Blue</div>
+        <div class="color-code">#3b82f6</div>
+      </div>
+
+      <div class="color-swatch swatch-cyan">
+        <div class="color-name">Cyan</div>
+        <div class="color-code">#06b6d4</div>
+      </div>
+
+      <div class="color-swatch swatch-sunshine">
+        <div class="color-name">Sunshine</div>
+        <div class="color-code">#fbbf24</div>
+      </div>
+
+      <div class="color-swatch swatch-coral">
+        <div class="color-name">Coral</div>
+        <div class="color-code">#fb7185</div>
+      </div>
+
+      <div class="color-swatch swatch-mint">
+        <div class="color-name">Mint</div>
+        <div class="color-code">#34d399</div>
+      </div>
+
+      <div class="color-swatch swatch-lavender">
+        <div class="color-name">Lavender</div>
+        <div class="color-code">#a78bfa</div>
+      </div>
+
+      <div class="color-swatch swatch-peach">
+        <div class="color-name">Peach</div>
+        <div class="color-code">#fdba74</div>
+      </div>
+
+      <div class="color-swatch swatch-ink">
+        <div class="color-name">Ink</div>
+        <div class="color-code">#1e293b</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="buttons">
+    <span class="section-number">03</span>
+    <h2 class="section-title">Buttons Worth Clicking</h2>
+
+    <div class="button-showcase">
+      <div>
+        <div class="type-label" style="margin-bottom: 1rem;">Primary Buttons</div>
+        <div class="button-row">
+          <button class="btn btn-primary btn-lg">Large Primary</button>
+          <button class="btn btn-primary">Primary Action</button>
+          <button class="btn btn-primary btn-sm">Small Primary</button>
+          <button class="btn btn-primary btn-rounded">→</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="type-label" style="margin-bottom: 1rem;">Secondary Buttons</div>
+        <div class="button-row">
+          <button class="btn btn-secondary btn-lg">Large Secondary</button>
+          <button class="btn btn-secondary">Secondary Action</button>
+          <button class="btn btn-secondary btn-sm">Small Secondary</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="type-label" style="margin-bottom: 1rem;">Accent Buttons</div>
+        <div class="button-row">
+          <button class="btn btn-accent btn-lg">Large Accent</button>
+          <button class="btn btn-accent">Accent Action</button>
+          <button class="btn btn-accent btn-sm">Small Accent</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="type-label" style="margin-bottom: 1rem;">Outline Buttons</div>
+        <div class="button-row">
+          <button class="btn btn-outline btn-lg">Large Outline</button>
+          <button class="btn btn-outline">Outline Action</button>
+          <button class="btn btn-outline btn-sm">Small Outline</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="components">
+    <span class="section-number">04</span>
+    <h2 class="section-title">Components That Work</h2>
+
+    <div class="components-grid">
+      <div class="component-card">
+        <h3 class="component-title">Input Fields</h3>
+
+        <div class="form-group">
+          <label class="form-label">Your Name</label>
+          <input type="text" class="form-input" placeholder="Enter your name">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" placeholder="you@example.com">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Message</label>
+          <input type="text" class="form-input" placeholder="Tell us what you think...">
+        </div>
+      </div>
+
+      <div class="component-card">
+        <h3 class="component-title">Toggles & Badges</h3>
+
+        <div class="toggle-container">
+          <div class="toggle active" onclick="this.classList.toggle('active')">
+            <div class="toggle-thumb"></div>
+          </div>
+          <span class="toggle-label">Enable notifications</span>
+        </div>
+
+        <div class="toggle-container">
+          <div class="toggle" onclick="this.classList.toggle('active')">
+            <div class="toggle-thumb"></div>
+          </div>
+          <span class="toggle-label">Dark mode</span>
+        </div>
+
+        <div style="margin-top: 2rem;">
+          <div class="type-label" style="margin-bottom: 1rem;">Status Badges</div>
+          <div class="badge-group">
+            <span class="badge badge-blue">New</span>
+            <span class="badge badge-success">Active</span>
+            <span class="badge badge-warning">Pending</span>
+            <span class="badge badge-danger">Urgent</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="component-card">
+        <h3 class="component-title">Cards</h3>
+        <div class="card-demo">
+          <div class="card-demo-title">Beautiful Content Cards</div>
+          <div class="card-demo-text">
+            Cards are perfect for organizing content into digestible chunks. They can hold text, images, buttons, and
+            more!
+          </div>
+          <button class="btn btn-primary btn-sm">Read More</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="lists">
+    <span class="section-number">05</span>
+    <h2 class="section-title">List Components</h2>
+
+    <div style="max-width: 800px; margin: 4rem auto 0;">
+      <div class="list-container">
+        <div class="list-item">
+          <div class="vote-section">
+            <button class="vote-btn vote-up">▲</button>
+            <span class="vote-count">342</span>
+            <button class="vote-btn vote-down">▼</button>
+          </div>
+          <div class="list-content">
+            <h3 class="list-title">Just launched our new design system! What do you think?</h3>
+            <div class="list-meta">
+              <span class="meta-item">Posted by <strong>@designlover</strong></span>
+              <span class="meta-item">2 hours ago</span>
+              <span class="meta-item">💬 24 comments</span>
+            </div>
+            <div class="list-tags">
+              <span class="tag">Design</span>
+              <span class="tag">UI/UX</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <div class="vote-section">
+            <button class="vote-btn vote-up">▲</button>
+            <span class="vote-count">128</span>
+            <button class="vote-btn vote-down">▼</button>
+          </div>
+          <div class="list-content">
+            <h3 class="list-title">Best practices for button design in 2026</h3>
+            <div class="list-meta">
+              <span class="meta-item">Posted by <strong>@uiguru</strong></span>
+              <span class="meta-item">5 hours ago</span>
+              <span class="meta-item">💬 18 comments</span>
+            </div>
+            <div class="list-tags">
+              <span class="tag">Tutorial</span>
+              <span class="tag">Buttons</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <div class="vote-section">
+            <button class="vote-btn vote-up">▲</button>
+            <span class="vote-count">89</span>
+            <button class="vote-btn vote-down">▼</button>
+          </div>
+          <div class="list-content">
+            <h3 class="list-title">How to choose the perfect color palette for your project</h3>
+            <div class="list-meta">
+              <span class="meta-item">Posted by <strong>@colortheory</strong></span>
+              <span class="meta-item">8 hours ago</span>
+              <span class="meta-item">💬 12 comments</span>
+            </div>
+            <div class="list-tags">
+              <span class="tag">Colors</span>
+              <span class="tag">Guide</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <div class="vote-section">
+            <button class="vote-btn vote-up">▲</button>
+            <span class="vote-count">56</span>
+            <button class="vote-btn vote-down">▼</button>
+          </div>
+          <div class="list-content">
+            <h3 class="list-title">Typography tips that will transform your designs instantly</h3>
+            <div class="list-meta">
+              <span class="meta-item">Posted by <strong>@fontfanatic</strong></span>
+              <span class="meta-item">12 hours ago</span>
+              <span class="meta-item">💬 8 comments</span>
+            </div>
+            <div class="list-tags">
+              <span class="tag">Typography</span>
+              <span class="tag">Tips</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="spacing">
+    <span class="section-number">06</span>
+    <h2 class="section-title">Spacing System</h2>
+
+    <div class="spacing-grid">
+      <div class="spacing-row">
+        <div class="spacing-label">XS</div>
+        <div class="spacing-visual" style="width: 8px;"></div>
+        <div class="spacing-value">8px</div>
+      </div>
+
+      <div class="spacing-row">
+        <div class="spacing-label">SM</div>
+        <div class="spacing-visual" style="width: 16px;"></div>
+        <div class="spacing-value">16px</div>
+      </div>
+
+      <div class="spacing-row">
+        <div class="spacing-label">MD</div>
+        <div class="spacing-visual" style="width: 24px;"></div>
+        <div class="spacing-value">24px</div>
+      </div>
+
+      <div class="spacing-row">
+        <div class="spacing-label">LG</div>
+        <div class="spacing-visual" style="width: 32px;"></div>
+        <div class="spacing-value">32px</div>
+      </div>
+
+      <div class="spacing-row">
+        <div class="spacing-label">XL</div>
+        <div class="spacing-visual" style="width: 48px;"></div>
+        <div class="spacing-value">48px</div>
+      </div>
+
+      <div class="spacing-row">
+        <div class="spacing-label">2XL</div>
+        <div class="spacing-visual" style="width: 64px;"></div>
+        <div class="spacing-value">64px</div>
+      </div>
+
+      <div class="spacing-row">
+        <div class="spacing-label">3XL</div>
+        <div class="spacing-visual" style="width: 96px;"></div>
+        <div class="spacing-value">96px</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p class="footer-text">Made with <span class="footer-emoji">💙</span> by the NiftyKick Design Team</p>
+  </footer>
+
+  <script>
+    // Dark Mode Toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const toggleIcon = document.getElementById('toggleIcon');
+    const body = document.body;
+
+    // Check for saved dark mode preference
+    const savedMode = localStorage.getItem('darkMode');
+    if (savedMode === 'enabled') {
+      body.classList.add('dark-mode');
+      toggleIcon.textContent = '☀️';
+    }
+
+    darkModeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark-mode');
+
+      if (body.classList.contains('dark-mode')) {
+        toggleIcon.textContent = '☀️';
+        localStorage.setItem('darkMode', 'enabled');
+      } else {
+        toggleIcon.textContent = '🌙';
+        localStorage.setItem('darkMode', 'disabled');
+      }
+    });
+
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Animate sections on scroll
+    document.querySelectorAll('section').forEach(section => {
+      section.style.opacity = '0';
+      section.style.transform = 'translateY(40px)';
+      section.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+      observer.observe(section);
+    });
+
+    // Animate type items
+    document.querySelectorAll('.type-item').forEach((item, index) => {
+      item.style.opacity = '0';
+      item.style.transform = 'translateY(20px)';
+      item.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+
+      setTimeout(() => {
+        item.style.opacity = '1';
+        item.style.transform = 'translateY(0)';
+      }, 100);
+    });
+
+    // Animate color swatches
+    document.querySelectorAll('.color-swatch').forEach((swatch, index) => {
+      swatch.style.opacity = '0';
+      swatch.style.transform = 'scale(0.8) rotate(-10deg)';
+      swatch.style.transition = `all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 0.05}s`;
+
+      setTimeout(() => {
+        swatch.style.opacity = '1';
+        swatch.style.transform = 'scale(1) rotate(0deg)';
+      }, 100);
+    });
+  </script>
 </body>
 
 </html>
