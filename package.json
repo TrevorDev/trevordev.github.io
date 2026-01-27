@@ -5,12 +5,7 @@
   "type": "module",
   "homepage": "https://trevordev.github.io/",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d ./"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
