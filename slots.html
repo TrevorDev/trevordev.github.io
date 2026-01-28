@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎰 Slot Machine RPG</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Black', Arial, sans-serif;
+            background: #2c2c54;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            background: #474787;
+            border: 2px solid #706fd3;
+            color: #e6e6e6;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .nav-tab:hover {
+            background: #5352a0;
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: #706fd3;
+            color: #fff;
+            border-color: #a29bfe;
+        }
+
+        /* Screen containers */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Player Stats Bar */
+        .player-stats {
+            background: #40407a;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 3px solid #706fd3;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .stat-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            color: #a29bfe;
+            font-size: 0.8em;
+        }
+
+        .stat-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #74b9ff;
+        }
+
+        .xp-container {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .xp-bar {
+            background: #2d3436;
+            height: 25px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 5px;
+            border: 2px solid #706fd3;
+        }
+
+        .xp-fill {
+            background: #55efc4;
+            height: 100%;
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: #2d3436;
+        }
+
+        /* Machine Selection Screen */
+        .machines-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .machine-card {
+            background: #40407a;
+            border-radius: 15px;
+            padding: 25px;
+            border: 3px solid #636e72;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .machine-card:hover:not(.locked) {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .machine-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .machine-card.bronze {
+            border-color: #d4a574;
+        }
+
+        .machine-card.silver {
+            border-color: #b2bec3;
+        }
+
+        .machine-card.gold {
+            border-color: #fdcb6e;
+        }
+
+        .machine-card.diamond {
+            border-color: #74b9ff;
+        }
+
+        .machine-card.mystery {
+            border-color: #a29bfe;
+        }
+
+        .machine-title {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .machine-info {
+            margin: 15px 0;
+        }
+
+        .machine-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+
+        .unlock-requirement {
+            background: #d63031;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #fff;
+        }
+
+        /* Game Screen */
+        .game-screen {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+
+        .gear-panel {
+            background: #40407a;
+            border-radius: 15px;
+            padding: 20px;
+            border: 3px solid #706fd3;
+            height: fit-content;
+        }
+
+        .gear-slots {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .gear-slot {
+            background: #2d3436;
+            border: 2px solid #636e72;
+            border-radius: 10px;
+            padding: 10px;
+            min-height: 80px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .gear-slot:hover {
+            border-color: #a29bfe;
+        }
+
+        .gear-slot.empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 2em;
+        }
+
+        .gear-item {
+            position: relative;
+        }
+
+        .gear-name {
+            font-weight: bold;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+        }
+
+        .gear-stats {
+            font-size: 0.75em;
+            color: #aaa;
+        }
+
+        .rarity-common {
+            color: #b2bec3;
+            border-color: #b2bec3;
+        }
+
+        .rarity-uncommon {
+            color: #55efc4;
+            border-color: #55efc4;
+        }
+
+        .rarity-rare {
+            color: #74b9ff;
+            border-color: #74b9ff;
+        }
+
+        .rarity-epic {
+            color: #a29bfe;
+            border-color: #a29bfe;
+        }
+
+        .rarity-legendary {
+            color: #fdcb6e;
+            border-color: #fdcb6e;
+        }
+
+        .total-stats {
+            margin-top: 20px;
+            padding: 15px;
+            background: #2d3436;
+            border-radius: 10px;
+            border: 2px solid #706fd3;
+        }
+
+        .total-stats h4 {
+            color: #a29bfe;
+            margin-bottom: 10px;
+        }
+
+        .total-stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+
+        /* Slot Machine Area */
+        .machine-area {
+            background: #40407a;
+            border-radius: 15px;
+            padding: 30px;
+            border: 4px solid #706fd3;
+        }
+
+        .machine-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .machine-name {
+            font-size: 2em;
+            color: #a29bfe;
+        }
+
+        .back-button {
+            background: #474787;
+            border: 2px solid #706fd3;
+            color: #e6e6e6;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            background: #2d3436;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #706fd3;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .reels-container {
+            background: #000;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: inset 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .reels {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .reel {
+            width: 120px;
+            height: 120px;
+            background: #2d3436;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            border: 3px solid #706fd3;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reel.spinning {
+            animation: spin 0.1s linear infinite;
+        }
+
+        .reel.spinning .symbol {
+            filter: blur(8px);
+        }
+
+        .reel.winning {
+            animation: glow 0.5s ease-in-out 3;
+            border-color: #55efc4;
+            box-shadow: 0 0 30px #55efc4;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translateY(0);
+            }
+
+            100% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px #55efc4;
+            }
+
+            50% {
+                box-shadow: 0 0 40px #55efc4, 0 0 60px #55efc4;
+            }
+        }
+
+        .controls {
+            text-align: center;
+        }
+
+        .spin-button {
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            padding: 20px 60px;
+            font-size: 1.5em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .spin-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(108, 92, 231, 0.6);
+            background: #5f4dd1;
+        }
+
+        .spin-button:disabled {
+            background: #636e72;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.2em;
+            color: #a29bfe;
+            min-height: 30px;
+            font-weight: bold;
+        }
+
+        /* Inventory Screen */
+        .inventory-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .inventory-section {
+            background: #40407a;
+            border-radius: 15px;
+            padding: 20px;
+            border: 3px solid #706fd3;
+        }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .inventory-item {
+            background: #2d3436;
+            border: 2px solid;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .inventory-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(162, 155, 254, 0.3);
+        }
+
+        .inventory-item.equipped::after {
+            content: '✓';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #55efc4;
+            color: #2d3436;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+        }
+
+        /* Achievements */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .achievement {
+            background: #40407a;
+            border: 3px solid #636e72;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .achievement.unlocked {
+            border-color: #706fd3;
+        }
+
+        .achievement.locked {
+            opacity: 0.5;
+        }
+
+        .achievement-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .achievement-title {
+            font-weight: bold;
+            color: #a29bfe;
+            margin-bottom: 5px;
+        }
+
+        .achievement-desc {
+            font-size: 0.85em;
+            color: #aaa;
+        }
+
+        /* Collection Book */
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .collection-item {
+            background: #40407a;
+            border: 2px solid;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .collection-item.discovered {
+            opacity: 1;
+        }
+
+        .collection-item.undiscovered {
+            opacity: 0.3;
+            filter: blur(5px);
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #40407a;
+            border: 3px solid #706fd3;
+            border-radius: 15px;
+            padding: 20px;
+            z-index: 1000;
+            animation: slideIn 0.5s, slideOut 0.5s 3.5s;
+            max-width: 300px;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        .notification-title {
+            font-weight: bold;
+            color: #a29bfe;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        /* Loot Beam */
+        .loot-beam {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 999;
+            animation: beamFade 2s;
+        }
+
+        @keyframes beamFade {
+            0% {
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .loot-beam.rarity-common {
+            background: linear-gradient(0deg, #b2bec3, transparent);
+        }
+
+        .loot-beam.rarity-uncommon {
+            background: linear-gradient(0deg, #55efc4, transparent);
+        }
+
+        .loot-beam.rarity-rare {
+            background: linear-gradient(0deg, #74b9ff, transparent);
+        }
+
+        .loot-beam.rarity-epic {
+            background: linear-gradient(0deg, #a29bfe, transparent);
+        }
+
+        .loot-beam.rarity-legendary {
+            background: linear-gradient(0deg, #fdcb6e, transparent);
+        }
+
+        /* Level Up */
+        .level-up-animation {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #40407a;
+            border: 5px solid #706fd3;
+            border-radius: 20px;
+            padding: 40px;
+            z-index: 1000;
+            text-align: center;
+            animation: levelUpAnim 2s;
+        }
+
+        @keyframes levelUpAnim {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .level-up-text {
+            font-size: 3em;
+            color: #a29bfe;
+            margin-bottom: 20px;
+        }
+
+        /* Prestige */
+        .prestige-section {
+            background: #40407a;
+            border: 4px solid #706fd3;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .prestige-button {
+            background: #fdcb6e;
+            color: #2d3436;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .prestige-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Save buttons */
+        .save-controls {
+            background: #40407a;
+            border: 3px solid #706fd3;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .save-button {
+            background: #55efc4;
+            color: #2d3436;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .load-button {
+            background: #74b9ff;
+            color: #2d3436;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .export-button,
+        .import-button {
+            background: #a29bfe;
+            color: #2d3436;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .game-screen {
+                grid-template-columns: 1fr;
+            }
+
+            .inventory-container {
+                grid-template-columns: 1fr;
+            }
+
+            .reel {
+                width: 90px;
+                height: 90px;
+                font-size: 3em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Player Stats Bar (always visible) -->
+        <div class="player-stats">
+            <div class="stat-group">
+                <div class="stat-item">
+                    <span class="stat-label">Level</span>
+                    <span class="stat-value" id="playerLevel">1</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Balance</span>
+                    <span class="stat-value" id="playerBalance">$100</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Prestige</span>
+                    <span class="stat-value" style="color: #fdcb6e;" id="prestigeLevel">0</span>
+                </div>
+            </div>
+            <div class="xp-container">
+                <div class="stat-label">Experience</div>
+                <div class="xp-bar">
+                    <div class="xp-fill" id="xpFill" style="width: 0%">
+                        <span id="xpText">0 / 100</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Save Controls -->
+        <div class="save-controls">
+            <button class="save-button" onclick="saveGame()">💾 Save Game</button>
+            <button class="load-button" onclick="loadGame()">📂 Load Game</button>
+            <button class="export-button" onclick="exportSave()">📤 Export Save</button>
+            <button class="import-button" onclick="importSave()">📥 Import Save</button>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="switchScreen('machines')">🎰 Machines</div>
+            <div class="nav-tab" onclick="switchScreen('inventory')">🎒 Inventory</div>
+            <div class="nav-tab" onclick="switchScreen('achievements')">🏆 Achievements</div>
+            <div class="nav-tab" onclick="switchScreen('collection')">📖 Collection</div>
+            <div class="nav-tab" onclick="switchScreen('prestige')">⭐ Prestige</div>
+        </div>
+
+        <!-- Machine Selection Screen -->
+        <div class="screen active" id="machinesScreen">
+            <div class="machines-grid" id="machinesGrid"></div>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="screen" id="gameScreen">
+            <div class="game-screen">
+                <!-- Gear Panel -->
+                <div class="gear-panel">
+                    <h3 style="color: #a29bfe; text-align: center;">⚔️ Equipment ⚔️</h3>
+                    <div class="gear-slots" id="gearSlots"></div>
+                    <div class="total-stats">
+                        <h4>Total Stats</h4>
+                        <div class="total-stat-row">
+                            <span>🍀 Luck:</span>
+                            <span id="totalLuck">0</span>
+                        </div>
+                        <div class="total-stat-row">
+                            <span>📈 Win Rate:</span>
+                            <span id="totalWinRate">0%</span>
+                        </div>
+                        <div class="total-stat-row">
+                            <span>✖️ Multiplier:</span>
+                            <span id="totalMultiplier">+0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Machine Area -->
+                <div class="machine-area">
+                    <button class="back-button" onclick="switchScreen('machines')">← Back to Machines</button>
+                    <div class="machine-header">
+                        <div class="machine-name" id="currentMachineName"></div>
+                    </div>
+
+                    <div class="stats-row">
+                        <div class="stat-box">
+                            <div class="stat-label">Balance</div>
+                            <div class="stat-value" id="gameBalance">$100</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Last Win</div>
+                            <div class="stat-value" id="lastWin">$0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Free Spins</div>
+                            <div class="stat-value" id="freeSpins">0</div>
+                        </div>
+                    </div>
+
+                    <div class="reels-container">
+                        <div class="reels">
+                            <div class="reel" id="reel1"><span class="symbol">🍒</span></div>
+                            <div class="reel" id="reel2"><span class="symbol">🍋</span></div>
+                            <div class="reel" id="reel3"><span class="symbol">🍊</span></div>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <button class="spin-button" id="spinButton">SPIN</button>
+                        <div class="message" id="message"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory Screen -->
+        <div class="screen" id="inventoryScreen">
+            <div class="inventory-container">
+                <div class="inventory-section">
+                    <h3 style="color: #a29bfe;">🎒 Inventory</h3>
+                    <div class="inventory-grid" id="inventoryGrid"></div>
+                </div>
+                <div class="inventory-section">
+                    <h3 style="color: #a29bfe;">⚔️ Equipped Gear</h3>
+                    <div id="equippedGearDisplay"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Achievements Screen -->
+        <div class="screen" id="achievementsScreen">
+            <div class="achievements-grid" id="achievementsGrid"></div>
+        </div>
+
+        <!-- Collection Screen -->
+        <div class="screen" id="collectionScreen">
+            <h2 style="color: #a29bfe; text-align: center; margin-bottom: 20px;">📖 Gear Collection Book</h2>
+            <div class="collection-grid" id="collectionGrid"></div>
+        </div>
+
+        <!-- Prestige Screen -->
+        <div class="screen" id="prestigeScreen">
+            <div class="prestige-section">
+                <h2 style="color: #a29bfe; font-size: 2.5em; margin-bottom: 20px;">⭐ PRESTIGE ⭐</h2>
+                <p style="font-size: 1.2em; margin-bottom: 20px;">
+                    Reset your progress to gain permanent bonuses!
+                </p>
+                <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: #a29bfe; margin-bottom: 15px;">Current Prestige Bonuses:</h3>
+                    <div id="prestigeBonuses"></div>
+                </div>
+                <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px;">
+                    <h3 style="color: #55efc4; margin-bottom: 15px;">Next Prestige Will Grant:</h3>
+                    <p>+10% Starting Balance</p>
+                    <p>+5% Luck Bonus</p>
+                    <p>+2% Win Rate</p>
+                </div>
+                <button class="prestige-button" id="prestigeButton" onclick="doPrestige()">
+                    PRESTIGE (Requires Level 50)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== GAME STATE ====================
+        const SYMBOLS = ['🍒', '🍋', '🍊', '💎', '🎰'];
+        const GEAR_SLOTS = ['Weapon', 'Helmet', 'Chest', 'Gloves', 'Boots', 'Accessory'];
+        const RARITIES = {
+            common: { color: '#9d9d9d', weight: 40 },
+            uncommon: { color: '#1eff00', weight: 30 },
+            rare: { color: '#0070dd', weight: 20 },
+            epic: { color: '#a335ee', weight: 8 },
+            legendary: { color: '#ff8000', weight: 2 }
+        };
+
+        const MACHINES = {
+            bronze: {
+                name: '🥉 Bronze Machine',
+                bet: 2,
+                payoutMultiplier: 1,
+                unlockLevel: 0,
+                symbolWeights: { '🍒': 40, '🍋': 30, '🍊': 20, '💎': 8, '🎰': 2 },
+                gearDropChance: 0.15,
+                color: '#cd7f32'
+            },
+            silver: {
+                name: '🥈 Silver Machine',
+                bet: 5,
+                payoutMultiplier: 1.5,
+                unlockLevel: 5,
+                symbolWeights: { '🍒': 30, '🍋': 30, '🍊': 25, '💎': 12, '🎰': 3 },
+                gearDropChance: 0.20,
+                color: '#c0c0c0'
+            },
+            gold: {
+                name: '🥇 Gold Machine',
+                bet: 10,
+                payoutMultiplier: 2,
+                unlockLevel: 10,
+                symbolWeights: { '🍒': 25, '🍋': 25, '🍊': 25, '💎': 20, '🎰': 5 },
+                gearDropChance: 0.25,
+                color: '#ffd700'
+            },
+            diamond: {
+                name: '💎 Diamond Machine',
+                bet: 25,
+                payoutMultiplier: 3,
+                unlockLevel: 20,
+                symbolWeights: { '🍒': 20, '🍋': 20, '🍊': 25, '💎': 30, '🎰': 5 },
+                gearDropChance: 0.35,
+                color: '#b9f2ff'
+            },
+            mystery: {
+                name: '❓ Mystery Machine',
+                bet: 0, // Random
+                payoutMultiplier: 0, // Random
+                unlockLevel: 15,
+                symbolWeights: { '🍒': 25, '🍋': 25, '🍊': 25, '💎': 20, '🎰': 5 },
+                gearDropChance: 0.50,
+                color: 'rainbow'
+            }
+        };
+
+        const ACHIEVEMENTS = [
+            { id: 'first_spin', name: 'First Spin', desc: 'Spin the reels for the first time', icon: '🎰', condition: (s) => s.totalSpins >= 1 },
+            { id: 'spin_100', name: 'Century', desc: 'Spin 100 times', icon: '💯', condition: (s) => s.totalSpins >= 100 },
+            { id: 'first_legendary', name: 'Legendary Hunter', desc: 'Find your first legendary item', icon: '🏆', condition: (s) => s.legendariesFound >= 1 },
+            { id: 'earn_1000', name: 'Millionaire', desc: 'Earn $1000 total', icon: '💰', condition: (s) => s.totalEarned >= 1000 },
+            { id: 'level_10', name: 'Experienced', desc: 'Reach level 10', icon: '⭐', condition: (s) => s.level >= 10 },
+            { id: 'level_25', name: 'Expert', desc: 'Reach level 25', icon: '🌟', condition: (s) => s.level >= 25 },
+            { id: 'level_50', name: 'Master', desc: 'Reach level 50', icon: '✨', condition: (s) => s.level >= 50 },
+            { id: 'full_gear', name: 'Fully Equipped', desc: 'Have all gear slots filled', icon: '⚔️', condition: (s) => Object.values(s.equippedGear).every(g => g !== null) },
+            { id: 'all_legendaries', name: 'Legend', desc: 'Equip all legendary gear', icon: '👑', condition: (s) => Object.values(s.equippedGear).every(g => g && g.rarity === 'legendary') },
+            { id: 'first_prestige', name: 'Prestige', desc: 'Prestige for the first time', icon: '⭐', condition: (s) => s.prestigeLevel >= 1 }
+        ];
+
+        let gameState = {
+            balance: 100,
+            level: 1,
+            xp: 0,
+            xpNeeded: 100,
+            prestigeLevel: 0,
+            equippedGear: {
+                Weapon: null,
+                Helmet: null,
+                Chest: null,
+                Gloves: null,
+                Boots: null,
+                Accessory: null
+            },
+            inventory: [],
+            discoveredGear: [],
+            unlockedAchievements: [],
+            totalSpins: 0,
+            totalEarned: 0,
+            legendariesFound: 0,
+            currentMachine: null,
+            freeSpins: 0
+        };
+
+        let isSpinning = false;
+        let soundEnabled = true;
+
+        // Audio Context
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function playSound(frequency, duration, type = 'sine') {
+            if (!soundEnabled) return;
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            oscillator.frequency.value = frequency;
+            oscillator.type = type;
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+        }
+
+        function playWinSound() {
+            playSound(523, 0.1);
+            setTimeout(() => playSound(659, 0.1), 100);
+            setTimeout(() => playSound(784, 0.2), 200);
+        }
+
+        function playLevelUpSound() {
+            for (let i = 0; i < 6; i++) {
+                setTimeout(() => playSound(400 + i * 100, 0.1), i * 80);
+            }
+        }
+
+        function showNotification(title, message, duration = 4000) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <div class="notification-title">${title}</div>
+                <div>${message}</div>
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), duration);
+        }
+
+        function showLootBeam(rarity) {
+            const beam = document.createElement('div');
+            beam.className = `loot-beam rarity-${rarity}`;
+            document.body.appendChild(beam);
+            setTimeout(() => beam.remove(), 2000);
+        }
+
+        function showLevelUp(level) {
+            const levelUp = document.createElement('div');
+            levelUp.className = 'level-up-animation';
+            levelUp.innerHTML = `
+                <div class="level-up-text">LEVEL UP!</div>
+                <div style="font-size: 2em; color: #55efc4;">Level ${level}</div>
+            `;
+            document.body.appendChild(levelUp);
+            playLevelUpSound();
+            setTimeout(() => levelUp.remove(), 2000);
+        }
+
+        // ==================== GEAR SYSTEM ====================
+        function generateGear(slot, forcedRarity = null) {
+            const rarity = forcedRarity || selectRarity();
+            const rarityMultiplier = { common: 1, uncommon: 1.5, rare: 2, epic: 3, legendary: 5 }[rarity];
+
+            const adjectives = ['Swift', 'Mighty', 'Ancient', 'Cursed', 'Divine', 'Ethereal', 'Blazing', 'Frozen'];
+            const nouns = ['Champion', 'Warrior', 'Sage', 'Assassin', 'Knight', 'Sorcerer'];
+
+            const name = `${adjectives[Math.floor(Math.random() * adjectives.length)]} ${slot} of the ${nouns[Math.floor(Math.random() * nouns.length)]}`;
+
+            const gear = {
+                id: Date.now() + Math.random(),
+                name: name,
+                slot: slot,
+                rarity: rarity,
+                stats: {
+                    luck: Math.floor((Math.random() * 10 + 5) * rarityMultiplier),
+                    winRate: Math.floor((Math.random() * 8 + 2) * rarityMultiplier),
+                    multiplier: Math.floor((Math.random() * 15 + 5) * rarityMultiplier)
+                }
+            };
+
+            // Special effects for epic and legendary
+            if (rarity === 'epic' || rarity === 'legendary') {
+                const specials = [
+                    'Chance for free spin on win',
+                    'Double XP gained',
+                    'Increased gear drop rate',
+                    'Lucky spin chance +5%'
+                ];
+                gear.special = specials[Math.floor(Math.random() * specials.length)];
+            }
+
+            return gear;
+        }
+
+        function selectRarity() {
+            const total = Object.values(RARITIES).reduce((sum, r) => sum + r.weight, 0);
+            let random = Math.random() * total;
+
+            for (const [rarity, data] of Object.entries(RARITIES)) {
+                random -= data.weight;
+                if (random <= 0) return rarity;
+            }
+            return 'common';
+        }
+
+        function calculateTotalStats() {
+            const stats = { luck: 0, winRate: 0, multiplier: 0 };
+            Object.values(gameState.equippedGear).forEach(gear => {
+                if (gear) {
+                    stats.luck += gear.stats.luck;
+                    stats.winRate += gear.stats.winRate;
+                    stats.multiplier += gear.stats.multiplier;
+                }
+            });
+
+            // Prestige bonuses
+            stats.luck += gameState.prestigeLevel * 5;
+            stats.winRate += gameState.prestigeLevel * 2;
+
+            return stats;
+        }
+
+        function equipGear(gear) {
+            const oldGear = gameState.equippedGear[gear.slot];
+            if (oldGear) {
+                gameState.inventory.push(oldGear);
+            }
+            gameState.equippedGear[gear.slot] = gear;
+            gameState.inventory = gameState.inventory.filter(g => g.id !== gear.id);
+
+            if (!gameState.discoveredGear.some(g => g.id === gear.id)) {
+                gameState.discoveredGear.push(gear);
+            }
+
+            updateGearDisplay();
+            checkAchievements();
+            saveGame();
+        }
+
+        function unequipGear(slot) {
+            const gear = gameState.equippedGear[slot];
+            if (gear) {
+                gameState.inventory.push(gear);
+                gameState.equippedGear[slot] = null;
+                updateGearDisplay();
+                saveGame();
+            }
+        }
+
+        // ==================== MACHINE SYSTEM ====================
+        function selectMachine(machineId) {
+            const machine = MACHINES[machineId];
+            if (gameState.level < machine.unlockLevel) {
+                showNotification('🔒 Locked', `Requires Level ${machine.unlockLevel}`);
+                return;
+            }
+
+            gameState.currentMachine = machineId;
+            switchScreen('game');
+            updateGameScreen();
+        }
+
+        function getWeightedSymbol(machine) {
+            const stats = calculateTotalStats();
+            const luckBonus = stats.luck / 100;
+
+            // Adjust weights based on luck (favor higher value symbols)
+            const adjustedWeights = { ...machine.symbolWeights };
+            adjustedWeights['💎'] *= (1 + luckBonus);
+            adjustedWeights['🎰'] *= (1 + luckBonus);
+
+            const total = Object.values(adjustedWeights).reduce((sum, w) => sum + w, 0);
+            let random = Math.random() * total;
+
+            for (const [symbol, weight] of Object.entries(adjustedWeights)) {
+                random -= weight;
+                if (random <= 0) return symbol;
+            }
+            return '🍒';
+        }
+
+        // ==================== SPIN SYSTEM ====================
+        async function spin() {
+            if (isSpinning) return;
+
+            const machine = MACHINES[gameState.currentMachine];
+            let bet = machine.bet;
+
+            if (gameState.currentMachine === 'mystery') {
+                bet = [5, 10, 15, 20][Math.floor(Math.random() * 4)];
+            }
+
+            if (gameState.balance < bet && gameState.freeSpins === 0) {
+                showNotification('❌ Insufficient Funds', 'Not enough balance to spin!');
+                return;
+            }
+
+            isSpinning = true;
+            document.getElementById('spinButton').disabled = true;
+
+            // Deduct bet
+            if (gameState.freeSpins === 0) {
+                gameState.balance -= bet;
+            } else {
+                gameState.freeSpins--;
+            }
+
+            updateGameScreen();
+            playSound(200, 0.1, 'square');
+
+            // Generate symbols
+            const symbols = [
+                getWeightedSymbol(machine),
+                getWeightedSymbol(machine),
+                getWeightedSymbol(machine)
+            ];
+
+            // Animate reels
+            const reels = [
+                document.getElementById('reel1'),
+                document.getElementById('reel2'),
+                document.getElementById('reel3')
+            ];
+
+            await Promise.all(
+                reels.map((reel, i) => spinReel(reel, symbols[i], i * 300))
+            );
+
+            // Calculate win
+            const stats = calculateTotalStats();
+            let baseWin = calculateWin(symbols);
+
+            // Apply machine multiplier
+            let multiplier = machine.payoutMultiplier;
+            if (gameState.currentMachine === 'mystery') {
+                multiplier = [1, 1.5, 2, 2.5][Math.floor(Math.random() * 4)];
+            }
+
+            // Apply gear multiplier
+            multiplier *= (1 + stats.multiplier / 100);
+
+            const totalWin = Math.floor(baseWin * multiplier);
+
+            if (totalWin > 0) {
+                gameState.balance += totalWin;
+                gameState.totalEarned += totalWin;
+                document.getElementById('lastWin').textContent = `$${totalWin}`;
+                document.getElementById('message').textContent = `✨ Won $${totalWin}! ✨`;
+                playWinSound();
+
+                // Check for gear drop
+                if (Math.random() < machine.gearDropChance) {
+                    const slot = GEAR_SLOTS[Math.floor(Math.random() * GEAR_SLOTS.length)];
+                    const gear = generateGear(slot);
+                    gameState.inventory.push(gear);
+
+                    if (gear.rarity === 'legendary') {
+                        gameState.legendariesFound++;
+                    }
+
+                    showLootBeam(gear.rarity);
+                    showNotification('🎁 Gear Drop!', `Found: ${gear.name}`, 5000);
+                    playSound(800, 0.3);
+                }
+
+                // Free spins bonus
+                if (symbols.every(s => s === '🎰')) {
+                    gameState.freeSpins += 5;
+                    showNotification('🎰 Bonus!', '5 Free Spins!');
+                }
+            } else {
+                document.getElementById('message').textContent = 'Better luck next time!';
+                playSound(200, 0.3, 'sawtooth');
+            }
+
+            // Gain XP
+            addXP(10);
+            gameState.totalSpins++;
+
+            checkAchievements();
+            updateGameScreen();
+            saveGame();
+
+            setTimeout(() => {
+                isSpinning = false;
+                document.getElementById('spinButton').disabled = false;
+            }, 500);
+        }
+
+        async function spinReel(reelElement, finalSymbol, delay) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    reelElement.classList.add('spinning');
+
+                    const spinInterval = setInterval(() => {
+                        reelElement.querySelector('.symbol').textContent = SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
+                    }, 100);
+
+                    setTimeout(() => {
+                        clearInterval(spinInterval);
+                        reelElement.classList.remove('spinning');
+                        reelElement.querySelector('.symbol').textContent = finalSymbol;
+                        playSound(300, 0.1);
+                        resolve();
+                    }, 2000 - delay);
+                }, delay);
+            });
+        }
+
+        function calculateWin(symbols) {
+            const [s1, s2, s3] = symbols;
+            const payouts = {
+                '💎': 100,
+                '🎰': 50,
+                '🍊': 30,
+                '🍋': 20,
+                '🍒': 10
+            };
+
+            if (s1 === s2 && s2 === s3) {
+                return payouts[s1];
+            }
+
+            if (s1 === s2 || s2 === s3 || s1 === s3) {
+                return 3;
+            }
+
+            return 0;
+        }
+
+        // ==================== PROGRESSION SYSTEM ====================
+        function addXP(amount) {
+            // Check for double XP gear
+            const hasDoubleXP = Object.values(gameState.equippedGear).some(g =>
+                g && g.special === 'Double XP gained'
+            );
+            if (hasDoubleXP) amount *= 2;
+
+            gameState.xp += amount;
+
+            if (gameState.xp >= gameState.xpNeeded) {
+                levelUp();
+            }
+
+            updateXPBar();
+        }
+
+        function levelUp() {
+            gameState.level++;
+            gameState.xp = 0;
+            gameState.xpNeeded = Math.floor(gameState.xpNeeded * 1.2);
+            gameState.balance += 20; // Level up bonus
+
+            showLevelUp(gameState.level);
+            showNotification('🎉 Level Up!', `Level ${gameState.level}! +$20 bonus`);
+
+            checkAchievements();
+            updatePlayerStats();
+            updateXPBar();
+            renderMachinesScreen();
+        }
+
+        function updateXPBar() {
+            const percent = (gameState.xp / gameState.xpNeeded) * 100;
+            document.getElementById('xpFill').style.width = percent + '%';
+            document.getElementById('xpText').textContent = `${gameState.xp} / ${gameState.xpNeeded}`;
+        }
+
+        // ==================== ACHIEVEMENTS ====================
+        function checkAchievements() {
+            ACHIEVEMENTS.forEach(achievement => {
+                if (!gameState.unlockedAchievements.includes(achievement.id)) {
+                    if (achievement.condition(gameState)) {
+                        gameState.unlockedAchievements.push(achievement.id);
+                        showNotification('🏆 Achievement!', achievement.name);
+                        playSound(600, 0.3);
+                    }
+                }
+            });
+            renderAchievementsScreen();
+        }
+
+        // ==================== PRESTIGE ====================
+        function doPrestige() {
+            if (gameState.level < 50) {
+                showNotification('❌ Cannot Prestige', 'Requires Level 50');
+                return;
+            }
+
+            if (!confirm('Are you sure? This will reset your progress but grant permanent bonuses!')) {
+                return;
+            }
+
+            gameState.prestigeLevel++;
+            gameState.level = 1;
+            gameState.xp = 0;
+            gameState.xpNeeded = 100;
+            gameState.balance = 100 + (gameState.prestigeLevel * 10);
+            gameState.equippedGear = {
+                Weapon: null,
+                Helmet: null,
+                Chest: null,
+                Gloves: null,
+                Boots: null,
+                Accessory: null
+            };
+            gameState.inventory = [];
+            gameState.freeSpins = 0;
+
+            showNotification('⭐ PRESTIGE!', `Prestige Level ${gameState.prestigeLevel}!`);
+            checkAchievements();
+            updateAllScreens();
+            saveGame();
+        }
+
+        // ==================== UI RENDERING ====================
+        function switchScreen(screenName) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+
+            document.getElementById(screenName + 'Screen').classList.add('active');
+            event.target.classList.add('active');
+
+            if (screenName === 'machines') renderMachinesScreen();
+            if (screenName === 'inventory') renderInventoryScreen();
+            if (screenName === 'achievements') renderAchievementsScreen();
+            if (screenName === 'collection') renderCollectionScreen();
+            if (screenName === 'prestige') renderPrestigeScreen();
+        }
+
+        function updatePlayerStats() {
+            document.getElementById('playerLevel').textContent = gameState.level;
+            document.getElementById('playerBalance').textContent = `$${gameState.balance}`;
+            document.getElementById('prestigeLevel').textContent = gameState.prestigeLevel;
+            updateXPBar();
+        }
+
+        function renderMachinesScreen() {
+            const grid = document.getElementById('machinesGrid');
+            grid.innerHTML = '';
+
+            Object.entries(MACHINES).forEach(([id, machine]) => {
+                const isLocked = gameState.level < machine.unlockLevel;
+                const card = document.createElement('div');
+                card.className = `machine-card ${id} ${isLocked ? 'locked' : ''}`;
+                card.onclick = () => !isLocked && selectMachine(id);
+
+                card.innerHTML = `
+                    <div class="machine-title">${machine.name}</div>
+                    <div class="machine-info">
+                        <div class="machine-info-row">
+                            <span>Bet:</span>
+                            <span>${machine.bet === 0 ? '$5-$20' : '$' + machine.bet}</span>
+                        </div>
+                        <div class="machine-info-row">
+                            <span>Payout:</span>
+                            <span>${machine.payoutMultiplier === 0 ? '1x-2.5x' : machine.payoutMultiplier + 'x'}</span>
+                        </div>
+                        <div class="machine-info-row">
+                            <span>Gear Drop:</span>
+                            <span>${(machine.gearDropChance * 100).toFixed(0)}%</span>
+                        </div>
+                    </div>
+                    ${isLocked ? `<div class="unlock-requirement">🔒 Unlock at Level ${machine.unlockLevel}</div>` : ''}
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        function updateGameScreen() {
+            const machine = MACHINES[gameState.currentMachine];
+            document.getElementById('currentMachineName').textContent = machine.name;
+            document.getElementById('gameBalance').textContent = `$${gameState.balance}`;
+            document.getElementById('freeSpins').textContent = gameState.freeSpins;
+
+            let bet = machine.bet;
+            if (gameState.currentMachine === 'mystery') bet = '$5-$20';
+
+            document.getElementById('spinButton').textContent =
+                gameState.freeSpins > 0 ? 'FREE SPIN!' : `SPIN - $${bet}`;
+
+            updateGearDisplay();
+        }
+
+        function updateGearDisplay() {
+            const stats = calculateTotalStats();
+            document.getElementById('totalLuck').textContent = stats.luck;
+            document.getElementById('totalWinRate').textContent = stats.winRate + '%';
+            document.getElementById('totalMultiplier').textContent = '+' + stats.multiplier + '%';
+
+            const slotsContainer = document.getElementById('gearSlots');
+            slotsContainer.innerHTML = '';
+
+            GEAR_SLOTS.forEach(slot => {
+                const gear = gameState.equippedGear[slot];
+                const slotDiv = document.createElement('div');
+                slotDiv.className = 'gear-slot';
+                slotDiv.onclick = () => gear && showGearTooltip(gear);
+
+                if (gear) {
+                    slotDiv.classList.add(`rarity-${gear.rarity}`);
+                    slotDiv.innerHTML = `
+                        <div class="gear-item">
+                            <div class="gear-name">${gear.name}</div>
+                            <div class="gear-stats">
+                                🍀 ${gear.stats.luck} | 📈 ${gear.stats.winRate}% | ✖️ ${gear.stats.multiplier}%
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    slotDiv.classList.add('empty');
+                    slotDiv.textContent = slot;
+                }
+
+                slotsContainer.appendChild(slotDiv);
+            });
+        }
+
+        function renderInventoryScreen() {
+            const inventoryGrid = document.getElementById('inventoryGrid');
+            inventoryGrid.innerHTML = '';
+
+            if (gameState.inventory.length === 0) {
+                inventoryGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">No items in inventory</p>';
+            } else {
+                gameState.inventory.forEach(gear => {
+                    const item = document.createElement('div');
+                    item.className = `inventory-item rarity-${gear.rarity}`;
+                    item.onclick = () => equipGear(gear);
+                    item.innerHTML = `
+                        <div style="font-weight: bold; margin-bottom: 5px;">${gear.name}</div>
+                        <div style="font-size: 0.85em; color: #aaa;">${gear.slot}</div>
+                        <div style="font-size: 0.8em; margin-top: 5px;">
+                            🍀 ${gear.stats.luck}<br>
+                            📈 ${gear.stats.winRate}%<br>
+                            ✖️ ${gear.stats.multiplier}%
+                        </div>
+                        ${gear.special ? `<div style="font-size: 0.75em; color: #fdcb6e; margin-top: 5px;">✨ ${gear.special}</div>` : ''}
+                    `;
+                    inventoryGrid.appendChild(item);
+                });
+            }
+
+            const equippedDisplay = document.getElementById('equippedGearDisplay');
+            equippedDisplay.innerHTML = '';
+
+            GEAR_SLOTS.forEach(slot => {
+                const gear = gameState.equippedGear[slot];
+                if (gear) {
+                    const item = document.createElement('div');
+                    item.className = `inventory-item equipped rarity-${gear.rarity}`;
+                    item.onclick = () => unequipGear(slot);
+                    item.innerHTML = `
+                        <div style="font-weight: bold; margin-bottom: 5px;">${gear.name}</div>
+                        <div style="font-size: 0.85em; color: #aaa;">${gear.slot}</div>
+                        <div style="font-size: 0.8em; margin-top: 5px;">
+                            🍀 ${gear.stats.luck}<br>
+                            📈 ${gear.stats.winRate}%<br>
+                            ✖️ ${gear.stats.multiplier}%
+                        </div>
+                        ${gear.special ? `<div style="font-size: 0.75em; color: #fdcb6e; margin-top: 5px;">✨ ${gear.special}</div>` : ''}
+                    `;
+                    equippedDisplay.appendChild(item);
+                }
+            });
+        }
+
+        function renderAchievementsScreen() {
+            const grid = document.getElementById('achievementsGrid');
+            grid.innerHTML = '';
+
+            ACHIEVEMENTS.forEach(achievement => {
+                const isUnlocked = gameState.unlockedAchievements.includes(achievement.id);
+                const div = document.createElement('div');
+                div.className = `achievement ${isUnlocked ? 'unlocked' : 'locked'}`;
+                div.innerHTML = `
+                    <div class="achievement-icon">${achievement.icon}</div>
+                    <div class="achievement-title">${achievement.name}</div>
+                    <div class="achievement-desc">${achievement.desc}</div>
+                    ${isUnlocked ? '<div style="color: #55efc4; margin-top: 10px;">✓ UNLOCKED</div>' : ''}
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        function renderCollectionScreen() {
+            const grid = document.getElementById('collectionGrid');
+            grid.innerHTML = '';
+
+            GEAR_SLOTS.forEach(slot => {
+                Object.keys(RARITIES).forEach(rarity => {
+                    const discovered = gameState.discoveredGear.find(g => g.slot === slot && g.rarity === rarity);
+                    const div = document.createElement('div');
+                    div.className = `collection-item ${discovered ? 'discovered' : 'undiscovered'} rarity-${rarity}`;
+                    div.innerHTML = `
+                        <div style="font-weight: bold;">${slot} - ${rarity}</div>
+                        ${discovered ? `<div style="font-size: 0.85em; margin-top: 5px;">${discovered.name}</div>` : '<div style="font-size: 0.85em; margin-top: 5px;">???</div>'}
+                    `;
+                    grid.appendChild(div);
+                });
+            });
+        }
+
+        function renderPrestigeScreen() {
+            const bonusesDiv = document.getElementById('prestigeBonuses');
+            bonusesDiv.innerHTML = `
+                <p>Starting Balance: +$${gameState.prestigeLevel * 10}</p>
+                <p>Luck Bonus: +${gameState.prestigeLevel * 5}%</p>
+                <p>Win Rate Bonus: +${gameState.prestigeLevel * 2}%</p>
+            `;
+
+            const button = document.getElementById('prestigeButton');
+            button.disabled = gameState.level < 50;
+        }
+
+        function updateAllScreens() {
+            updatePlayerStats();
+            renderMachinesScreen();
+            renderInventoryScreen();
+            renderAchievementsScreen();
+            renderCollectionScreen();
+            renderPrestigeScreen();
+            if (gameState.currentMachine) updateGameScreen();
+        }
+
+        // ==================== SAVE/LOAD SYSTEM ====================
+        function saveGame() {
+            localStorage.setItem('slotRPGSave', JSON.stringify(gameState));
+        }
+
+        function loadGame() {
+            const saved = localStorage.getItem('slotRPGSave');
+            if (saved) {
+                gameState = JSON.parse(saved);
+                updateAllScreens();
+                showNotification('✅ Loaded', 'Game loaded successfully!');
+            } else {
+                showNotification('❌ Error', 'No save file found!');
+            }
+        }
+
+        function exportSave() {
+            const saveData = JSON.stringify(gameState);
+            const blob = new Blob([saveData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'slot-rpg-save.json';
+            a.click();
+            showNotification('📤 Exported', 'Save file downloaded!');
+        }
+
+        function importSave() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        gameState = JSON.parse(event.target.result);
+                        updateAllScreens();
+                        saveGame();
+                        showNotification('✅ Imported', 'Save file loaded!');
+                    } catch (error) {
+                        showNotification('❌ Error', 'Invalid save file!');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // ==================== INITIALIZATION ====================
+        document.getElementById('spinButton').onclick = spin;
+
+        // Auto-save every 30 seconds
+        setInterval(saveGame, 30000);
+
+        // Initialize
+        updateAllScreens();
+        renderMachinesScreen();
+
+        // Try to load save on startup
+        const saved = localStorage.getItem('slotRPGSave');
+        if (saved) {
+            gameState = JSON.parse(saved);
+            updateAllScreens();
+        }
+    </script>
+</body>
+
+</html>
